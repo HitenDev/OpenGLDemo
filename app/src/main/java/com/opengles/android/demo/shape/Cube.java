@@ -1,8 +1,9 @@
 package com.opengles.android.demo.shape;
 
 import android.opengl.GLES20;
-import android.opengl.GLException;
 import android.opengl.Matrix;
+import android.os.Handler;
+import android.os.Message;
 
 import com.opengles.android.demo.utils.ShaderUtils;
 
@@ -10,8 +11,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
-
-import javax.microedition.khronos.opengles.GL;
 
 /**
  * Created by admin on 2017/6/2.
@@ -45,13 +44,22 @@ public class Cube extends IShape {
             1f, -1f, -1f,
             1f, 1f, -1f,
     };
-    private static short[] index = {
+    private static short[] index2 = {
             0, 1, 3, 3, 1, 2,
             3, 2, 7, 7, 2, 6,
             7, 6, 5, 5, 7, 4,
             4, 5, 0, 0, 5, 1,
             4, 0, 7, 7, 0, 3,
             5, 1, 6, 6, 1, 2
+    };
+
+    private static short[] index = {
+            0, 1, 2, 0, 2, 3,//正
+            4, 5, 1, 4, 1, 0,//左
+            3, 2, 6, 3, 6, 7,//右
+            7, 6, 5, 7, 5, 4,
+            4, 0, 3, 4, 3, 7,
+            6, 2, 1, 6, 1, 5
     };
 
     private static float[] colors = {
@@ -71,6 +79,8 @@ public class Cube extends IShape {
     private float[] mViewMatrix = new float[16];
     private float[] mProjectMatrix = new float[16];
     private float[] mMVPMatrix = new float[16];
+
+    private int angle = 0;
 
     @Override
     public void init() {
@@ -93,12 +103,13 @@ public class Cube extends IShape {
         GLES20.glAttachShader(program, vertexShader);
         GLES20.glAttachShader(program, fragmentShader);
         GLES20.glLinkProgram(program);
+
+//        handler.sendEmptyMessageDelayed(0, 200);
     }
 
     @Override
     public void draw() {
         GLES20.glUseProgram(program);
-
         int matrixLocation = GLES20.glGetUniformLocation(program, "vMatrix");
 
         GLES20.glUniformMatrix4fv(matrixLocation, 1, false, mMVPMatrix, 0);
@@ -116,18 +127,34 @@ public class Cube extends IShape {
 
         GLES20.glDisableVertexAttribArray(positionLocation);
         GLES20.glDisableVertexAttribArray(colorLocation);
+        nextLookAt();
     }
 
     @Override
     public void onSurfaceChanged(int width, int height) {
-        super.onSurfaceChanged(width, height);
         //计算宽高比
-        float ratio=(float)width/height;
+        float ratio = (float) width / height;
         //设置透视投影
         Matrix.frustumM(mProjectMatrix, 0, -ratio, ratio, -1, 1, 3, 20);
         //设置相机位置
-        Matrix.setLookAtM(mViewMatrix, 0, 5.0f, 5.0f, 10.0f, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mViewMatrix, 0, 0.0f, 0.0f, 10.0f, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
         //计算变换矩阵
-        Matrix.multiplyMM(mMVPMatrix,0,mProjectMatrix,0,mViewMatrix,0);
+        Matrix.multiplyMM(mMVPMatrix, 0, mProjectMatrix, 0, mViewMatrix, 0);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
     }
+
+    private void nextLookAt() {
+        angle += 2;
+        if (angle > 360) {
+            angle = angle - 360;
+        }
+
+        float r = 10.0f;
+        float x = (float) (r * Math.sin(angle * Math.PI / 180));
+        float z = (float) (r * Math.cos(angle * Math.PI / 180));
+        Matrix.setLookAtM(mViewMatrix, 0, x, 0.0f, z, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        //计算变换矩阵
+        Matrix.multiplyMM(mMVPMatrix, 0, mProjectMatrix, 0, mViewMatrix, 0);
+    }
+
 }

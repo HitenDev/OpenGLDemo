@@ -82,4 +82,9 @@ public class Circle extends IShape {
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, vertexs.length / 3);
         GLES20.glDisableVertexAttribArray(positionLocation);
     }
+
+    @Override
+    public void onSurfaceChanged(int width, int height) {
+
+    }
 }

@@ -14,7 +14,7 @@ import java.nio.ShortBuffer;
  * Created by admin on 2017/6/1.
  */
 
-public class Triangle extends IShape {
+public class Rectangle extends IShape {
 
     private Context context;
     private int program;
@@ -24,16 +24,16 @@ public class Triangle extends IShape {
 
     // x y z r g b a
     private float[] vertexData = {
-            -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-            0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-            0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f
+            -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f
     };
     static short index[]={
             0,1,3,2
     };
 
-    public Triangle(Context context) {
+    public Rectangle(Context context) {
         this.context = context;
     }
 
@@ -74,6 +74,11 @@ public class Triangle extends IShape {
 
         GLES20.glDisableVertexAttribArray(positionLocation);
         GLES20.glDisableVertexAttribArray(colorLocation);
+
+    }
+
+    @Override
+    public void onSurfaceChanged(int width, int height) {
 
     }
 }

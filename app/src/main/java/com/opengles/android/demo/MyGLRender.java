@@ -4,10 +4,10 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
+import com.opengles.android.demo.shape.Ball;
 import com.opengles.android.demo.shape.Circle;
 import com.opengles.android.demo.shape.Cube;
 import com.opengles.android.demo.shape.IShape;
-import com.opengles.android.demo.shape.Triangle;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -24,7 +24,7 @@ public class MyGLRender implements GLSurfaceView.Renderer {
 
     public MyGLRender(Context context) {
         this.context = context;
-        shape = new Cube();
+        shape = new Ball();
     }
 
     @Override
